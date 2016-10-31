@@ -8,14 +8,8 @@ use Omnipay\DummyNC\Message\AuthorizeRequest;
 /**
  * DummyNC Gateway
  *
- * This gateway is useful for testing. It simply authorizes any payment made using a valid
- * credit card number and expiry.
+ * This gateway is useful for testing.
  *
- * Any card number which passes the Luhn algorithm and ends in an even number is authorized,
- * for example: 4242424242424242
- *
- * Any card number which passes the Luhn algorithm and ends in an odd number is declined,
- * for example: 4111111111111111
  */
 class Gateway extends AbstractGateway
 {
@@ -26,16 +20,29 @@ class Gateway extends AbstractGateway
 
     public function getDefaultParameters()
     {
-        return array();
+        return array(
+        	'callbackURL' => '',
+        );
     }
 
-    public function authorize(array $parameters = array())
+    public function getcallbackURL()
     {
-        return $this->createRequest('\Omnipay\DummyNC\Message\AuthorizeRequest', $parameters);
+    	return $this->getParameter('callbackURL');
+    }
+
+    public function setcallbackURL($value)
+    {
+    	return $this->setParameter('callbackURL', $value);
     }
 
     public function purchase(array $parameters = array())
     {
-        return $this->authorize($parameters);
+    	return $this->createRequest('\Omnipay\DummyNC\Message\PurchaseRequest', $parameters);
     }
+
+    public function completePurchase(array $parameters = array())
+    {
+    	return $this->createRequest('\Omnipay\DummyNC\Message\CompletePurchaseRequest', $parameters);
+    }
+
 }
