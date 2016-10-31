@@ -1,0 +1,39 @@
+{
+    "name": "bencellis/omnipay-dummync",
+    "type": "library",
+    "description": "Dummy (no card) driver for the Omnipay payment processing library",
+    "keywords": [
+        "dummync",
+        "gateway",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment"
+    ],
+    "homepage": "https://github.com/bencellis/omnipay-dummync",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Benjamin Ellis",
+            "email": "benellis@mukudu.net"
+        },
+        {
+            "name": "Omnipay Contributors",
+            "homepage": "https://github.com/bencellis/omnipay-dummync/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Omnipay\\DummyNC\\" : "src/" }
+    },
+    "require": {
+        "omnipay/common": "~2.0"
+    },
+    "require-dev": {
+        "omnipay/tests": "~2.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    }
+}
