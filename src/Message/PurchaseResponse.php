@@ -25,7 +25,21 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     public function getRedirectUrl()
     {
     	error_log(__METHOD__);
-        return $this->getRequest()->getcallbackURL() . '?' . http_build_query($this->data);
+    	// here we just by pass the step to redirect to pay processor
+    	// and instead use the success or fail URL to redirect the browser
+		$result = $this->getRequest()->getTestResult();			// set in calling code
+   		if ($result == 'success')
+   		{
+   			if (!$redirecturl = $this->getRequest()->getNotifyUrl())
+   			{
+   				$redirecturl = $this->getRequest()->getReturnUrl();
+   			}
+   		}
+   		else
+   		{ 			// cancel or fail
+			$redirecturl = $this->getRequest()->getCancelUrl();
+   		}
+        return $redirecturl;
     }
 
     public function getRedirectMethod()

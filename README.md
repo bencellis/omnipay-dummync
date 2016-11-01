@@ -1,5 +1,7 @@
 # Omnipay: DummyNC
 
+### THIS LIBRARY IS NOT COMPLETE YET ###
+
 **DummyNC (no card) off-site processor driver for the Omnipay PHP payment processing library**
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
@@ -44,3 +46,6 @@ you can subscribe to.
 
 If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/bencellis/omnipay-dummync/issues),
 or better yet, fork the library and submit a pull request.
+
+
+https://packagist.org/

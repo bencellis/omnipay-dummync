@@ -9,17 +9,7 @@ use Omnipay\Common\Message\AbstractRequest;
  */
 class PurchaseRequest extends AbstractRequest
 {
-	public function getcallbackURL()
-	{
-		error_log(__METHOD__);
-		return $this->getParameter('callbackURL');
-	}
-
-	public function setcallbackURL($value)
-	{
-		error_log(__METHOD__);
-		return $this->setParameter('callbackURL', $value);
-	}
+	protected $possibles = array('success', 'fail', 'cancel');
 
     public function getData()
     {
@@ -35,7 +25,8 @@ class PurchaseRequest extends AbstractRequest
         	$this->validate('returnUrl');
         	$data['MC_callback'] =  $this->getReturnUrl();
         }
-        $data['callbackURL'] = $this->getcallbackURL();
+        $data['testResult'] = $this->getTestResult();
+
         $data['cartId'] = $this->getTransactionId();
 
        	error_log(print_r($data, true));
@@ -47,6 +38,13 @@ class PurchaseRequest extends AbstractRequest
     	error_log(__METHOD__);
     	$data['reference'] = uniqid();
         return $this->response = new PurchaseResponse($this, $data);
+    }
+
+    /*
+     * function for testing different scenarios
+     */
+    public function getTestResult() {
+		return (in_array($this->getParameter('notifyUrl')) ? $this->possibles[0] : $this->getParameter('notifyUrl'));
     }
 
 }

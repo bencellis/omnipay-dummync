@@ -20,19 +20,7 @@ class Gateway extends AbstractGateway
 
     public function getDefaultParameters()
     {
-        return array(
-        	'callbackURL' => '',
-        );
-    }
-
-    public function getcallbackURL()
-    {
-    	return $this->getParameter('callbackURL');
-    }
-
-    public function setcallbackURL($value)
-    {
-    	return $this->setParameter('callbackURL', $value);
+        return array();
     }
 
     public function purchase(array $parameters = array())
