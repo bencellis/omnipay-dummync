@@ -9,7 +9,7 @@ use Omnipay\Common\Message\AbstractRequest;
  */
 class PurchaseRequest extends AbstractRequest
 {
-	protected $possibles = array('success', 'fail', 'cancel');
+	private $possibles = array('success', 'fail', 'cancel');
 
     public function getData()
     {
@@ -30,6 +30,7 @@ class PurchaseRequest extends AbstractRequest
         $data['cartId'] = $this->getTransactionId();
 
        	error_log(print_r($data, true));
+
         return $data;
     }
 
@@ -44,7 +45,13 @@ class PurchaseRequest extends AbstractRequest
      * function for testing different scenarios
      */
     public function getTestResult() {
-		return (in_array($this->getParameter('notifyUrl')) ? $this->possibles[0] : $this->getParameter('notifyUrl'));
+    	error_log(__METHOD__ . ':new');
+
+    	$allparams = $this->getParameters();
+    	error_log(print_r($allparams, true));
+
+    	// default success
+		return (in_array($this->getParameter('testResult'), $this->possibles) ? $this->getParameter('testResult') : $this->possibles[0]);
     }
 
 }
