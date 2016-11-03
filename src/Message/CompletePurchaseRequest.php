@@ -11,9 +11,12 @@ class CompletePurchaseRequest extends PurchaseRequest
 {
     public function getData()
     {
-        return $this->httpRequest->request->all();
+    	$data = array();
+    	// pretend all is well in the world
+    	$data['transStatus'] = 'Y';  // other option would be 'C' for cancelled
+    	$data['rawAuthMessage'] = 'Order has been processed successfully.  :) ';
 
-    	//return array();
+        return $data;
     }
 
     public function sendData($data)

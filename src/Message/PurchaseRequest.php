@@ -9,15 +9,19 @@ use Omnipay\Common\Message\AbstractRequest;
  */
 class PurchaseRequest extends AbstractRequest
 {
-	private $possibles = array('success', 'fail', 'cancel');
+	private $resultoutcomes = array(
+		'success' => 'Your Order has been processed successfully',
+		'fail' => 'There has been an error - your order has not been processed, please try again.',
+		'cancel' => 'You have cancelled the transaction - you order has not been processed.'
+	);
 
     public function getData()
     {
-    	error_log(__METHOD__);
-    	$data = array();
+    	$this->validate('amount');		// must be defined
 
-        $this->validate('amount');
+    	$data = array();
         $data['amount'] = $this->getAmount();
+        $data['testOutcome'] = $this->getTestOutcome();
 
         // Either the nodifyUrl or the returnUrl can be provided.
         // The returnUrl is deprecated, as strictly this is a notifyUrl.
@@ -25,33 +29,31 @@ class PurchaseRequest extends AbstractRequest
         	$this->validate('returnUrl');
         	$data['MC_callback'] =  $this->getReturnUrl();
         }
-        $data['testResult'] = $this->getTestResult();
-
         $data['cartId'] = $this->getTransactionId();
-
-       	error_log(print_r($data, true));
 
         return $data;
     }
 
     public function sendData($data)
     {
-    	error_log(__METHOD__);
     	$data['reference'] = uniqid();
         return $this->response = new PurchaseResponse($this, $data);
     }
 
     /*
-     * function for testing different scenarios
+     * functions for testing different scenarios - 'success', 'fail', 'cancel'
      */
-    public function getTestResult() {
-    	error_log(__METHOD__ . ':new');
-
-    	$allparams = $this->getParameters();
-    	error_log(print_r($allparams, true));
-
-    	// default success
-		return (in_array($this->getParameter('testResult'), $this->possibles) ? $this->getParameter('testResult') : $this->possibles[0]);
+    public function getTestOutcome() {
+    	return $this->getParameter('testOutcome');
     }
 
+    public function setTestOutcome($value = '') {
+    	// this could be an invalid value - set to a valid value - default success
+    	$value = in_array($value, array_keys($this->resultoutcomes)) ? $value : array_keys($this->resultoutcomes)[0];
+    	return $this->setParameter('testOutcome', $value);
+    }
+
+    public function getOutcomeMessage($outcome) {
+    	return $this->resultoutcomes[$outcome];
+    }
 }

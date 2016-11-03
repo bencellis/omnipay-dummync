@@ -4,6 +4,7 @@ namespace Omnipay\DummyNC\Message;
 
 use Omnipay\Common\Message\AbstractResponse;
 use Omnipay\Common\Message\RedirectResponseInterface;
+use Omnipay\Common\Exception\InvalidResponseException;
 
 /**
  * DummyNC Purchase Response
@@ -12,45 +13,69 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
 {
     public function isSuccessful()
     {
-    	error_log(__METHOD__);
         return false;
     }
 
     public function isRedirect()
     {
-    	error_log(__METHOD__);
-        return true;
+    	if ($this->getRequest()->getTestOutcome()  == 'success')
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
     }
 
+    public function isCancelled()
+    {
+    	if ($this->getRequest()->getTestOutcome() == 'cancel')
+    	{
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    }
+
+    public function getData() {
+    	error_log(__METHOD__);
+
+		$data = array();
+		$outcome = $this->getRequest()->getTestOutcome();			// set in calling code
+
+		if ($outcome == 'fail')
+		{
+			throw new InvalidResponseException($this->getRequest()->getOutcomeMessage($result));
+		}
+
+		$data['testOutcome'] = $outcome;
+		$this->setMessage($this->getRequest()->getOutcomeMessage($outcome));
+
+		return $data;
+    }
+
+    // this should only be called if isRedirect() returns true
     public function getRedirectUrl()
     {
-    	error_log(__METHOD__);
     	// here we just by pass the step to redirect to pay processor
     	// and instead use the success or fail URL to redirect the browser
-		$result = $this->getRequest()->getTestResult();			// set in calling code
-   		if ($result == 'success')
+  		if (!$redirecturl = $this->getRequest()->getNotifyUrl())
    		{
-   			if (!$redirecturl = $this->getRequest()->getNotifyUrl())
-   			{
-   				$redirecturl = $this->getRequest()->getReturnUrl();
-   			}
-   		}
-   		else
-   		{ 			// cancel or fail
-			$redirecturl = $this->getRequest()->getCancelUrl();
+   			$redirecturl = $this->getRequest()->getReturnUrl();
    		}
         return $redirecturl;
     }
 
     public function getRedirectMethod()
     {
-    	error_log(__METHOD__);
         return 'GET';
     }
 
     public function getRedirectData()
     {
-    	error_log(__METHOD__);
         return null;
     }
 }
